@@ -6,22 +6,42 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"khot-queue-api/configs"
 	"log"
+	"time"
 )
 
-func Connect() (*mongo.Client, error) {
+var mongoClient *mongo.Client
+
+func Connect() (*mongo.Database, error) {
 	jsonConfig := configs.LoadJsonConfig()
 
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
 	clientOptions := options.Client().ApplyURI(jsonConfig.DbConnection)
-	client, err := mongo.Connect(context.TODO(), clientOptions)
+
+	client, err := mongo.Connect(ctx, clientOptions)
 	if err != nil {
 		return nil, err
 	}
 
-	err = client.Ping(context.TODO(), nil)
-	if err != nil {
+	if err := client.Ping(ctx, nil); err != nil {
 		return nil, err
 	}
 
-	log.Println("Connected to MongoDB!")
-	return client, nil
+	log.Println("✅ Connected to MongoDB!")
+
+	mongoClient = client
+
+	// ระบุชื่อ database ที่จะใช้
+	return client.Database("khot-queue"), nil
+}
+
+// DisconnectMongo ปิด connection อย่างปลอดภัย
+func DisconnectMongo() error {
+	if mongoClient != nil {
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+		return mongoClient.Disconnect(ctx)
+	}
+	return nil
 }
