@@ -32,7 +32,7 @@ func Connect() (*mongo.Database, error) {
 	log.Println("✅ Connected to MongoDB!")
 
 	mongoClient = client
-
+	DB = client.Database("khot-queue")
 	// ระบุชื่อ database ที่จะใช้
 	return client.Database("khot-queue"), nil
 }

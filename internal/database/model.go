@@ -22,5 +22,5 @@ type MenuItem struct {
 	CreatedBy   primitive.ObjectID  `bson:"created_by" json:"created_by"`     // ID ผู้สร้าง (ObjectID)
 	UpdatedDate time.Time           `bson:"updated_date" json:"updated_date"` // วันที่อัปเดต
 	UpdatedBy   *primitive.ObjectID `bson:"updated_by" json:"updated_by"`     // ID ผู้อัปเดต (ObjectID)
-	CompanyID   *primitive.ObjectID `bson:"company_id" json:"company_id"`     // ID ของบริษัท (ObjectID)
+	StoreID     *primitive.ObjectID `bson:"store_id" json:"store_id"`         // ID ของร้าน (ObjectID)
 }
