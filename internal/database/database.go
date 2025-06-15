@@ -10,6 +10,7 @@ import (
 )
 
 var mongoClient *mongo.Client
+var DB *mongo.Database
 
 func Connect() (*mongo.Database, error) {
 	jsonConfig := configs.LoadJsonConfig()
