@@ -1,5 +1,5 @@
 # ใช้ golang 1.23.0 image เป็น base image
-FROM docker.io/library/golang:1.23.0-alpine AS builder
+FROM docker.io/library/golang:1.24.0-alpine AS builder
 
 # กำหนด working directory ใน container
 WORKDIR /app
@@ -14,7 +14,7 @@ RUN go mod tidy
 COPY . .
 
 # คอมไพล์แอปพลิเคชัน Go
-RUN go build -o intakes-api .
+RUN go build -o khot-queue-api .
 
 # ใช้ image ที่เล็กกว่าในการรันแอปพลิเคชัน (สำหรับ production)
 FROM alpine:latest
@@ -26,11 +26,11 @@ RUN apk --no-cache add ca-certificates
 WORKDIR /root/
 
 # คัดลอกแอปพลิเคชันที่คอมไพล์แล้วจาก builder stage
-COPY --from=builder /app/intakes-api .
-COPY environment.prod.json ./environment.json
+COPY --from=builder /app/khot-queue-api .
+COPY configs/environment/environment.prod.json ./configs/environment/environment.json
 
 # เปิดพอร์ตที่แอปพลิเคชันจะรัน
 EXPOSE 80
 
 # รันแอปพลิเคชัน
-CMD ["./intakes-api"]
+CMD ["./khot-queue-api"]
